@@ -94,7 +94,12 @@ function trace() {
     // ).and().attach('detailed')
 
 }
-
+function getContext() {
+  return Java.use('android.app.ActivityThread').currentApplication().getApplicationContext().getContentResolver();
+}
+function logAndroidId() {
+  Logger.INFO('Android Id ', Java.use('android.provider.Settings$Secure').getString(getContext(), 'android_id'));
+}
 function onLoadedLibgame(obj:InvocationContext, ret:InvocationReturnValue)
 {
     for ( let i = 0 ; i < 0 ; i ++)
@@ -103,7 +108,10 @@ function onLoadedLibgame(obj:InvocationContext, ret:InvocationReturnValue)
         Thread.sleep(1)
     }
     // trace()
+    // logAndroidId();
     hook_libil2cpp();
+    logAndroidId();
+    // Il2Cpp.dump()
 }
 
 // function onLoadedLibc(obj:InvocationContext, args:InvocationReturnValue)
@@ -114,10 +122,12 @@ function onLoadedLibgame(obj:InvocationContext, ret:InvocationReturnValue)
 // Il2Cpp.perform(() => {
 //     Logger.INFO('UNITY VERSION', ' : ' + Il2Cpp.unityVersion);
 // });
+
+
 Java.perform(function(){
     // hook_ssl_pinning();
     // hook_libc();
-
+    // logAndroidId()
     // hook_module.hook_dlopen(onLoadEmpty, onLoadedLibgame);
     hook_module.android_dlopen_ext(onLoadEmpty, onLoadedLibgame);
 })

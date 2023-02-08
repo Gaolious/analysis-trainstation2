@@ -17,7 +17,7 @@ function hook_log_debug_int(base_addr: NativePointer) {
     // message= dword ptr  8
     // method= dword ptr  0Ch
     let func_name = 'log_dbg_int';
-    let offset = 0x02D4919B;
+    let offset = 51137330; // 0x30b10e7;
     
     Logger.INFO(func_name, 'start to hook', {base_addr:base_addr, offset:offset});
     Interceptor.attach( base_addr.add(offset), {
@@ -39,6 +39,7 @@ function hook_log_debug_int(base_addr: NativePointer) {
         }
     })
 }
+
 function hook_log_debug_object(base_addr: NativePointer) {
     // ; void __cdecl Log__Debug_object_(Il2CppObject *message, const MethodInfo_2D4927D *method)
     // Log$$Debug_object_ proc near
@@ -46,7 +47,7 @@ function hook_log_debug_object(base_addr: NativePointer) {
     // message= dword ptr  8
     // method= dword ptr  0Ch
     let func_name = 'log_dbg_obj';
-    let offset = 0x02D4927D;
+    let offset = 51137556; // 0x30b11c9;
     
     Logger.INFO(func_name, 'start to hook', {base_addr:base_addr, offset:offset});
     Interceptor.attach( base_addr.add(offset), {
@@ -73,6 +74,13 @@ function il2cpp_string(base_addr: NativePointer) {
     let str_msg = ptr.readUtf16String(msg_len);
     return str_msg;
 }
+function il2cpp_buffer(base_addr: NativePointer) {
+    let ptr = base_addr.add(0x0C);
+    let msg_len = ptr.readInt();
+    ptr = ptr.add(0x04);
+    let str_msg = ptr.readCString(msg_len);
+    return str_msg
+}
 function hook_log_debug_object_object(base_addr: NativePointer) {
     // void __cdecl Log__Debug_object__object_(Il2CppObject *message, Il2CppObject *tag, const MethodInfo_2D49326 *method)
     // Log$$Debug_object__object_ proc near
@@ -81,7 +89,7 @@ function hook_log_debug_object_object(base_addr: NativePointer) {
     // method= dword ptr  10h
 
     let func_name = 'log_dbg_obj2';
-    let offset = 0x02d49326;
+    let offset = 51137725; // 0x30b1272;
     
     Logger.INFO(func_name, 'start to hook', {base_addr:base_addr, offset:offset});
     Interceptor.attach( base_addr.add(offset), {
@@ -100,12 +108,12 @@ function hook_log_debug_object_object(base_addr: NativePointer) {
             // Logger.DUMP(func_name, 'tag', hexdump(tag, {offset:0, length:Math.min(0x40,dump_size), header:true, ansi:false}));
             // Logger.DUMP(func_name, 'method', hexdump(method, {offset:0, length:Math.min(0x40,dump_size), header:true, ansi:false}));
             
-            if (str_msg) {
-                if ( str_msg.indexOf('Http') >= 0 || str_msg.indexOf('https://game.trainstation2.com/login') >= 0 ) {
-                    let trace = Thread.backtrace(this.context, Backtracer.ACCURATE).map(DebugSymbol.fromAddress);
-                    Logger.TRACE(func_name, 'base addr : ' + base_addr, trace);
-                }
-            }
+            // if (str_msg) {
+            //     if ( str_msg.indexOf('Http') >= 0 || str_msg.indexOf('https://game.trainstation2.com/login') >= 0 ) {
+            //         let trace = Thread.backtrace(this.context, Backtracer.ACCURATE).map(DebugSymbol.fromAddress);
+            //         Logger.TRACE(func_name, 'base addr : ' + base_addr, trace);
+            //     }
+            // }
         }, 
         onLeave: function(retval) {
             // Logger.INFO(func_name, 'called - onLeave');
@@ -116,10 +124,12 @@ function hook_log_debug_object_object(base_addr: NativePointer) {
 
 function hook_login(base_addr: NativePointer) {
     /**
-     * Login
-     * ; System_Threading_Tasks_Task_LoginResponse__o *__cdecl TS2Application_Networking_LoginContext__Login(TS2Application_Networking_LoginContext_o *this, const MethodInfo *method)
-    TS2Application_Networking_LoginContext$$Login proc near
-
+     *    {
+     *       "Address": 59371304,
+     *       "Name": "TS2Application.Networking.LoginContext$$Login",
+     *       "Signature": "System_Threading_Tasks_Task_LoginResponse__o* TS2Application_Networking_LoginContext__Login (TS2Application_Networking_LoginContext_o* __this, const MethodInfo* method);",
+     *       "TypeSignature": "iii"
+     *     },
     var_3C= xmmword ptr -3Ch
     anonymous_0= dword ptr -2Ch
     anonymous_1= dword ptr -28h
@@ -129,7 +139,7 @@ function hook_login(base_addr: NativePointer) {
     */
 
     let func_name = 'login';
-    let offset = 0x02d49326;
+    let offset = 0x389ef28;
     
     Logger.INFO(func_name, 'start to hook', {base_addr:base_addr, offset:offset});
     Interceptor.attach( base_addr.add(offset), {
@@ -252,10 +262,14 @@ function parse_request_data(base_addr: NativePointer ) {
 }
 
 function hook_request_sender(base_addr: NativePointer) {
-    // ; System_Threading_Tasks_Task_RequestResult__o *__cdecl PixelFederation_Common_Backend_RequestSender__SendRetryAsync(
-    //     PixelFederation_Common_Backend_RequestSender_o *this,
-    //     PixelFederation_Common_Backend_RequestData_o *requestData,
-    //     int32_t maxRetryCount, System_Threading_CancellationToken_o token, const MethodInfo *method)
+    /*
+    *     {
+      "Address": 12435012,
+      "Name": "PixelFederation.Common.Backend.RequestSender$$SendRetryAsync",
+      "Signature": "System_Threading_Tasks_Task_RequestResult__o* PixelFederation_Common_Backend_RequestSender__SendRetryAsync (PixelFederation_Common_Backend_RequestSender_o* __this, PixelFederation_Common_Backend_RequestData_o* requestData, int32_t maxRetryCount, System_Threading_CancellationToken_o token, const MethodInfo* method);",
+      "TypeSignature": "iiiiii"
+    },
+    * */
     // PixelFederation_Common_Backend_RequestSender$$SendRetryAsync proc near
     // var_4C= xmmword ptr -4Ch
     // anonymous_0= xmmword ptr -3Ch
@@ -269,7 +283,7 @@ function hook_request_sender(base_addr: NativePointer) {
     // method= dword ptr  18h
 
     let func_name = 'req_Sender';
-    let offset = 0x00BACA5B;
+    let offset = 0xbdbe44;
     let dump_size = 0x40;
 
     Logger.INFO(func_name, 'start to hook', {base_addr:base_addr, offset:offset});
@@ -307,14 +321,15 @@ function hook_LogRequestResult(base_addr: NativePointer) {
 }
 function hook_json(base_addr: NativePointer) {
     /**
-     * System_String_o *__cdecl Newtonsoft_Json_JsonConvert__SerializeObject_41562017(
-        Il2CppObject *value,
-        Newtonsoft_Json_JsonSerializerSettings_o *settings,
-        const MethodInfo *method)
-{
+     *    {
+     *       "Address": 42548933,
+     *       "Name": "Newtonsoft.Json.JsonConvert$$SerializeObject",
+     *       "Signature": "System_String_o* Newtonsoft_Json_JsonConvert__SerializeObject (Il2CppObject* value, const MethodInfo* method);",
+     *       "TypeSignature": "iii"
+     *     },
      */
     let func_name = 'json_convert';
-    let offset = 0x00BABB74;
+    let offset = 0x2893ec5;
     let dump_size = 0x40;
     
     Logger.INFO(func_name, 'start to hook', {base_addr:base_addr, offset:offset});
@@ -342,16 +357,16 @@ function hook_add_http_header(base_addr: NativePointer) {
      * ; void __cdecl System_Net_Http_Headers_HttpHeaders__Add(System_Net_Http_Headers_HttpHeaders_o *this, System_String_o *name, System_String_o *value, const MethodInfo *method)
     System_Net_Http_Headers_HttpHeaders$$Add proc near
 
-    this= dword ptr  8
-    name= dword ptr  0Ch
-    value= dword ptr  10h
-    method= dword ptr  14h
-    System_Net_Http_Headers_HttpHeaders$$Add	il2cpp	014C8FEF	000000B0	00000020	00000010	R	.	.	.	.	B	T	.
-
+    {
+      "Address": 21921979,
+      "Name": "System.Net.Http.Headers.HttpHeaders$$Add",
+      "Signature": "void System_Net_Http_Headers_HttpHeaders__Add (System_Net_Http_Headers_HttpHeaders_o* __this, System_String_o* name, System_String_o* value, const MethodInfo* method);",
+      "TypeSignature": "viiii"
+    },
     */
 
     let func_name = 'HttpAddHeader';
-    let offset = 0x014C8FEF;
+    let offset = 0x14e80bb;
     let dump_size = 0x40;
     
     Logger.INFO(func_name, 'start to hook', {base_addr:base_addr, offset:offset});
@@ -370,14 +385,17 @@ function hook_add_http_header(base_addr: NativePointer) {
 } 
 
 function hook_system_io_write(base_addr: NativePointer) {
-     // void __cdecl System_IO_MemoryStream__Write(
-     //    System_IO_MemoryStream_o *this,
-     //    System_Byte_array *buffer,
-     //    int32_t offset,
-     //    int32_t count,
-     //    const MethodInfo *method)
+    /*
+        {
+      "Address": 42778738,
+      "Name": "System.IO.MemoryStream$$Write",
+      "Signature": "void System_IO_MemoryStream__Write (System_IO_MemoryStream_o* __this, System_Byte_array* buffer, int32_t offset, int32_t count, const MethodInfo* method);",
+      "TypeSignature": "viiiii"
+    },
+    * */
+
         let func_name = 'IO.Mem.Write';
-        let offset = 0x027DACEE;
+        let offset = 42824675; // 0x28cc072;
         let dump_size = 0x40;
         
         Logger.INFO(func_name, 'start to hook', {base_addr:base_addr, offset:offset});
@@ -388,41 +406,39 @@ function hook_system_io_write(base_addr: NativePointer) {
                 this.offset = args[2];
                 this.count = args[3].toInt32();
                 this.method = args[4];
-                Logger.INFO(func_name, 'onEnter - params : ', {instance:this.instance, buffer:this.buffer, offset:this.offset, count:this.count, method:this.method});
                 /**
                  * 27 21:45:45 | T:20819 | I | IO.Mem.Write    | onEnter - params : 
                                               {'instance': '0x325af40', 'buffer': '0x3175000', 'offset': '0x0', 'count': '0x61', 'method': '0x0'}
                  */
-                
-                Logger.DUMP(func_name, 'buffer', hexdump(this.buffer.add(0x10), {offset:0, length: Math.min(this.count, 0x40), header:true, ansi:false}));
+                let ptr = this.buffer.add(0x10);
+                if ( ptr.readInt() != 0x180117 )
+                {
+                    // let c = this.buffer.add(0x10).readS8()
+                    // if ( c == 0x7b )
+                    Logger.INFO(func_name, this.buffer.add(0x10).readCString(this.count), {})
 
-            }, 
+                    // Logger.INFO(func_name, 'onEnter - params : ', {instance:this.instance, buffer:this.buffer, offset:this.offset, count:this.count, method:this.method});
+                    // Logger.DUMP(func_name, 'buffer', hexdump(this.buffer.add(0x10), {offset:0, length: this.count , header:true, ansi:false}));
+
+                }
+            },
             onLeave: function(retval) {
             }
         })    
 }
 
 function hook_system_content_serialize(base_addr: NativePointer) {
-    // System_Threading_Tasks_Task_o *__cdecl System_Net_Http_StreamContent__SerializeToStreamAsync(
-    //     System_Net_Http_StreamContent_o *this,
-    //     System_IO_Stream_o *stream,
-    //     System_Net_TransportContext_o *context,
-    //     const MethodInfo *method)
-    //
-    // 00000000 System_Net_Http_StreamContent_Fields struc ; (sizeof=0x24, align=0x4, copyof_68206)
-    // 00000000 baseclass_0     System_Net_Http_HttpContent_Fields ?
-    // 0000000C content         dd ?                    ; offset
-    // 00000010 bufferSize      dd ?
-    // 00000014 cancellationToken System_Threading_CancellationToken_o ?
-    // 00000018 startPosition   dq ?
-    // 00000020 contentCopied   db ?
-    // 00000021                 db ? ; undefined
-    // 00000022                 db ? ; undefined
-    // 00000023                 db ? ; undefined
-    // 00000024 System_Net_Http_StreamContent_Fields ends
+    /**
+     *     {
+     *       "Address": 21889309,
+     *       "Name": "System.Net.Http.StreamContent$$SerializeToStreamAsync",
+     *       "Signature": "System_Threading_Tasks_Task_o* System_Net_Http_StreamContent__SerializeToStreamAsync (System_Net_Http_StreamContent_o* __this, System_IO_Stream_o* stream, System_Net_TransportContext_o* context, const MethodInfo* method);",
+     *       "TypeSignature": "iiiii"
+     *     },
+     */
 
     let func_name = 'StreamContent';
-    let offset = 0x014C1051;
+    let offset = 0x14e011d;
     let dump_size = 0x40;
     
     Logger.INFO(func_name, 'start to hook', {base_addr:base_addr, offset:offset});
@@ -443,15 +459,15 @@ function hook_system_content_serialize(base_addr: NativePointer) {
 
 function hook_send_request(base_addr: NativePointer) {
     /*
-        System_Net_WebOperation_o *__cdecl System_Net_HttpWebRequest__SendRequest(
-            System_Net_HttpWebRequest_o *this,
-            bool redirecting,
-            System_Net_BufferOffsetSize_o *writeBuffer,
-            System_Threading_CancellationToken_o cancellationToken,
-            const MethodInfo *method)
+    {
+      "Address": 12318167,
+      "Name": "System.Net.HttpWebRequest$$SendRequest",
+      "Signature": "System_Net_WebOperation_o* System_Net_HttpWebRequest__SendRequest (System_Net_HttpWebRequest_o* __this, bool redirecting, System_Net_BufferOffsetSize_o* writeBuffer, System_Threading_CancellationToken_o cancellationToken, const MethodInfo* method);",
+      "TypeSignature": "iiiiii"
+    },
     */
     let func_name = 'SendRequest';
-    let offset = 0x00B901EE;
+    let offset = 0xbbf5d7;
     let dump_size = 0x40;
     
     Logger.INFO(func_name, 'start to hook', {base_addr:base_addr, offset:offset});
@@ -472,13 +488,17 @@ function hook_send_request(base_addr: NativePointer) {
 }
 
 function hook_mono(base_addr:NativePointer) {
-    // void __cdecl System_Net_Http_MonoWebRequestHandler___c___SendAsync_b__99_0(
-    //     System_Net_Http_MonoWebRequestHandler___c_o *this,
-    //     Il2CppObject *l,
-    //     const MethodInfo *method)    
+    /*
+    *     {
+      "Address": 21861180,
+      "Name": "System.Net.Http.MonoWebRequestHandler.<>c$$<SendAsync>b__99_0",
+      "Signature": "void System_Net_Http_MonoWebRequestHandler___c___SendAsync_b__99_0 (System_Net_Http_MonoWebRequestHandler___c_o* __this, Il2CppObject* l, const MethodInfo* method);",
+      "TypeSignature": "viii"
+    },
+    * */
 
     let func_name = 'MonoRequest';
-    let offset = 0x014BA270;
+    let offset = 0x14d933c;
     let dump_size = 0x40;
     
     Logger.INFO(func_name, 'start to hook', {base_addr:base_addr, offset:offset});
@@ -497,8 +517,16 @@ function hook_mono(base_addr:NativePointer) {
 }
 
 function hook_send(base_addr:NativePointer) {
+    /**
+     *     {
+     *       "Address": 54747054,
+     *       "Name": "System.Net.Sockets.Socket$$Send",
+     *       "Signature": "int32_t System_Net_Sockets_Socket__Send (System_Net_Sockets_Socket_o* __this, System_Collections_Generic_IList_ArraySegment_byte___o* buffers, int32_t socketFlags, const MethodInfo* method);",
+     *       "TypeSignature": "iiiii"
+     *     },
+     */
     let func_name = 'send';
-    let offset = 0x003ffee0;
+    let offset = 0x3435fae;
     let dump_size = 0x40;
     
     Logger.INFO(func_name, 'start to hook', {base_addr:base_addr, offset:offset});
@@ -519,49 +547,53 @@ function hook_send(base_addr:NativePointer) {
     })    
 }
 
-function hook_deserialize(base_addr: NativePointer) {
-    // void __cdecl OdinSerializer_UnitySerializationUtility__DeserializeUnityObject(
-    //         UnityEngine_Object_o *unityObject,
-    //         OdinSerializer_SerializationData_o *data,
-    //         OdinSerializer_DeserializationContext_o *context,
-    //         const MethodInfo *method)
-    // {
-    let func_name = 'deserialize';
-    let offset = 0x0110140A;
-    let dump_size = 0x40;
-
-    Logger.INFO(func_name, 'start to hook', {base_addr:base_addr, offset:offset});
-    Interceptor.attach( base_addr.add(offset), {
-        onEnter: function(args) {
-            this.unity_object = args[0];
-            this.serialization_data = args[1];
-            this.deserialization_context = args[2];
-            this.method = args[3];
-
-            Logger.INFO(func_name, 'onEnter - params : ', {unity_object:this.unity_object, serialization_data:this.serialization_data, deserialization_context:this.deserialization_context, method:this.method});
-            // Logger.DUMP(func_name, 'unity_object', hexdump(this.unity_object, {offset:0, length:dump_size, header:true, ansi:false}));
-            // Logger.DUMP(func_name, 'serialization_data', hexdump(this.serialization_data, {offset:0, length:dump_size, header:true, ansi:false}));
-            // Logger.DUMP(func_name, 'deserialization_context', hexdump(this.deserialization_context, {offset:0, length:dump_size, header:true, ansi:false}));
-        },
-        onLeave: function(retval) {
-            Logger.INFO(func_name, 'onLeave - params : ', {unity_object:this.unity_object, serialization_data:this.serialization_data, deserialization_context:this.deserialization_context, method:this.method});
-            // Logger.DUMP(func_name, 'unity_object', hexdump(this.unity_object, {offset:0, length:dump_size, header:true, ansi:false}));
-            // Logger.DUMP(func_name, 'serialization_data', hexdump(this.serialization_data, {offset:0, length:dump_size, header:true, ansi:false}));
-            // Logger.DUMP(func_name, 'deserialization_context', hexdump(this.deserialization_context, {offset:0, length:dump_size, header:true, ansi:false}));
-        }
-    })
-}
+// function hook_deserialize(base_addr: NativePointer) {
+//     /**
+//      *     {
+//      *       "Address": 17961629,
+//      *       "Name": "OdinSerializer.UnitySerializationUtility$$DeserializeUnityObject",
+//      *       "Signature": "void OdinSerializer_UnitySerializationUtility__DeserializeUnityObject (UnityEngine_Object_o* unityObject, OdinSerializer_SerializationData_o* data, OdinSerializer_DeserializationContext_o* context, const MethodInfo* method);",
+//      *       "TypeSignature": "viiii"
+//      *     },
+//      */
+//     let func_name = 'deserialize';
+//     let offset = 0x112129d;
+//     let dump_size = 0x40;
+//
+//     Logger.INFO(func_name, 'start to hook', {base_addr:base_addr, offset:offset});
+//     Interceptor.attach( base_addr.add(offset), {
+//         onEnter: function(args) {
+//             this.unity_object = args[0];
+//             this.serialization_data = args[1];
+//             this.deserialization_context = args[2];
+//             this.method = args[3];
+//
+//             Logger.INFO(func_name, 'onEnter - params : ', {unity_object:this.unity_object, serialization_data:this.serialization_data, deserialization_context:this.deserialization_context, method:this.method});
+//             // Logger.DUMP(func_name, 'unity_object', hexdump(this.unity_object, {offset:0, length:dump_size, header:true, ansi:false}));
+//             // Logger.DUMP(func_name, 'serialization_data', hexdump(this.serialization_data, {offset:0, length:dump_size, header:true, ansi:false}));
+//             // Logger.DUMP(func_name, 'deserialization_context', hexdump(this.deserialization_context, {offset:0, length:dump_size, header:true, ansi:false}));
+//         },
+//         onLeave: function(retval) {
+//             Logger.INFO(func_name, 'onLeave - params : ', {unity_object:this.unity_object, serialization_data:this.serialization_data, deserialization_context:this.deserialization_context, method:this.method});
+//             // Logger.DUMP(func_name, 'unity_object', hexdump(this.unity_object, {offset:0, length:dump_size, header:true, ansi:false}));
+//             // Logger.DUMP(func_name, 'serialization_data', hexdump(this.serialization_data, {offset:0, length:dump_size, header:true, ansi:false}));
+//             // Logger.DUMP(func_name, 'deserialization_context', hexdump(this.deserialization_context, {offset:0, length:dump_size, header:true, ansi:false}));
+//         }
+//     })
+// }
 
 function hook_serialize(base_addr: NativePointer) {
-    // void __cdecl OdinSerializer_UnitySerializationUtility__SerializeUnityObject(
-    //         UnityEngine_Object_o *unityObject,
-    //         OdinSerializer_SerializationData_o *data,
-    //         bool serializeUnityFields,
-    //         OdinSerializer_SerializationContext_o *context,
-    //         const MethodInfo *method)
+    /**
+     *     {
+     *       "Address": 17961882,
+     *       "Name": "OdinSerializer.UnitySerializationUtility$$SerializeUnityObject",
+     *       "Signature": "void OdinSerializer_UnitySerializationUtility__SerializeUnityObject (UnityEngine_Object_o* unityObject, OdinSerializer_SerializationData_o* data, bool serializeUnityFields, OdinSerializer_SerializationContext_o* context, const MethodInfo* method);",
+     *       "TypeSignature": "viiiii"
+     *     },
+     */
 
     let func_name = 'serialize';
-    let offset = 0x01101507;
+    let offset = 0x112139a;
     let dump_size = 0x40;
 
     Logger.INFO(func_name, 'start to hook', {base_addr:base_addr, offset:offset});
@@ -588,94 +620,92 @@ function hook_serialize(base_addr: NativePointer) {
         }
     })
 }
-
-function hook_http_request_message_dispose(base_addr: NativePointer) {
-
-    // structure
-    // 00000000 System_Net_Http_HttpRequestMessage_Fields struc ; (sizeof=0x18, align=0x4, copyof_68198)
-    // 00000000                                         ; XREF: System_Net_Http_HttpRequestMessage_o/r
-    // 00000000 headers         dd ?                    ; offset
-    // 00000004 method          dd ?                    ; offset
-    // 00000008 version         dd ?                    ; offset
-    // 0000000C uri             dd ?                    ; offset
-    // 00000010 is_used         db ?
-    // 00000011 disposed        db ?
-    // 00000012                 db ? ; undefined
-    // 00000013                 db ? ; undefined
-    // 00000014 _Content_k__BackingField dd ?           ; offset
-    // 00000018 System_Net_Http_HttpRequestMessage_Fields ends
-    // 00000018
-    // 00000000 ; ---------------------------------------------------------------------------
-    // 00000000
-    // 00000000 System_Net_Http_HttpRequestMessage_o struc ; (sizeof=0x20, align=0x4, copyof_68201)
-    // 00000000 klass           dd ?                    ; offset
-    // 00000004 monitor         dd ?                    ; offset
-    // 00000008 fields          System_Net_Http_HttpRequestMessage_Fields ?
-    // 00000020 System_Net_Http_HttpRequestMessage_o ends
-
-    let func_name = 'req_msg_dispose';
-    let offset = 0x014C0640;
-    let dump_size = 0x40;
-
-    Logger.INFO(func_name, 'start to hook', {base_addr:base_addr, offset:offset});
-    Interceptor.attach( base_addr.add(offset), {
-        onEnter: function(args) {
-            let instance = args[0];
-            let _method = args[1];
-
-            Logger.INFO(func_name, 'onEnter - params : ', {instance:instance, method:_method});
-            Logger.DUMP(func_name, 'instance', hexdump(instance, {offset:0, length:dump_size, header:true, ansi:false}));
-            Logger.DUMP(func_name, 'instance', hexdump(instance.readPointer(), {offset:0, length:dump_size, header:true, ansi:false}));
-            // 28 03:09:19 | T:13961 | I | req_msg_dispose | onEnter - params :
-            //                                               {'instance': '0x1611230', 'method': '0x5def5660'}
-            // 28 03:09:19 | T:13961 | P | req_msg_dispose | instance
-            //                                                          0  1  2  3  4  5  6  7  8  9  A  B  C  D  E  F  0123456789ABCDEF
-            //                                               01611230  00 bd fe 5d 00 00 00 00 80 c8 b2 01 d0 5f 00 01  ...]........._..
-            //                                               01611240  00 00 00 00 80 24 35 01 01 00 00 00 00 00 00 00  .....$5.........
-            //                                               01611250  00 00 00 00 00 00 00 00 68 41 b2 7e 00 00 00 00  ........hA.~....
-            //                                               01611260  c8 5d 0f 01 f0 c4 08 00 01 00 00 00 07 00 00 00  .]..............
-            let offset = instance.readPointer();
-            let headers = offset.add(0);
-            let method = offset.add(4).readInt();
-            let version = offset.add(8);
-            let uri = offset.add(0x0c);
-            let is_used = offset.add(0x10).readS8();
-            // let disposed = offset.add(0x11);
-            let content = offset.add(0x14);
-
-            Logger.INFO(func_name, 'System_Net_Http_HttpRequestMessage_Fields', {
-                headers:headers,
-                method:method,
-                version:version,
-                uri:uri,
-                is_used:is_used,
-                content:content,
-            });
-            Logger.DUMP(func_name, 'headers', hexdump(headers, {offset:0, length:dump_size, header:true, ansi:false}));
-            Logger.DUMP(func_name, 'version', hexdump(version, {offset:0, length:dump_size, header:true, ansi:false}));
-            Logger.DUMP(func_name, 'uri', hexdump(uri, {offset:0, length:dump_size, header:true, ansi:false}));
-            Logger.DUMP(func_name, 'content', hexdump(content, {offset:0, length:dump_size, header:true, ansi:false}));
-        },
-        onLeave: function(retval) {
-        }
-    })
-}
+//
+// function hook_http_request_message_dispose(base_addr: NativePointer) {
+//
+//     // structure
+//     // 00000000 System_Net_Http_HttpRequestMessage_Fields struc ; (sizeof=0x18, align=0x4, copyof_68198)
+//     // 00000000                                         ; XREF: System_Net_Http_HttpRequestMessage_o/r
+//     // 00000000 headers         dd ?                    ; offset
+//     // 00000004 method          dd ?                    ; offset
+//     // 00000008 version         dd ?                    ; offset
+//     // 0000000C uri             dd ?                    ; offset
+//     // 00000010 is_used         db ?
+//     // 00000011 disposed        db ?
+//     // 00000012                 db ? ; undefined
+//     // 00000013                 db ? ; undefined
+//     // 00000014 _Content_k__BackingField dd ?           ; offset
+//     // 00000018 System_Net_Http_HttpRequestMessage_Fields ends
+//     // 00000018
+//     // 00000000 ; ---------------------------------------------------------------------------
+//     // 00000000
+//     // 00000000 System_Net_Http_HttpRequestMessage_o struc ; (sizeof=0x20, align=0x4, copyof_68201)
+//     // 00000000 klass           dd ?                    ; offset
+//     // 00000004 monitor         dd ?                    ; offset
+//     // 00000008 fields          System_Net_Http_HttpRequestMessage_Fields ?
+//     // 00000020 System_Net_Http_HttpRequestMessage_o ends
+//
+//     let func_name = 'req_msg_dispose';
+//     let offset = 0x014C0640;
+//     let dump_size = 0x40;
+//
+//     Logger.INFO(func_name, 'start to hook', {base_addr:base_addr, offset:offset});
+//     Interceptor.attach( base_addr.add(offset), {
+//         onEnter: function(args) {
+//             let instance = args[0];
+//             let _method = args[1];
+//
+//             Logger.INFO(func_name, 'onEnter - params : ', {instance:instance, method:_method});
+//             Logger.DUMP(func_name, 'instance', hexdump(instance, {offset:0, length:dump_size, header:true, ansi:false}));
+//             Logger.DUMP(func_name, 'instance', hexdump(instance.readPointer(), {offset:0, length:dump_size, header:true, ansi:false}));
+//             // 28 03:09:19 | T:13961 | I | req_msg_dispose | onEnter - params :
+//             //                                               {'instance': '0x1611230', 'method': '0x5def5660'}
+//             // 28 03:09:19 | T:13961 | P | req_msg_dispose | instance
+//             //                                                          0  1  2  3  4  5  6  7  8  9  A  B  C  D  E  F  0123456789ABCDEF
+//             //                                               01611230  00 bd fe 5d 00 00 00 00 80 c8 b2 01 d0 5f 00 01  ...]........._..
+//             //                                               01611240  00 00 00 00 80 24 35 01 01 00 00 00 00 00 00 00  .....$5.........
+//             //                                               01611250  00 00 00 00 00 00 00 00 68 41 b2 7e 00 00 00 00  ........hA.~....
+//             //                                               01611260  c8 5d 0f 01 f0 c4 08 00 01 00 00 00 07 00 00 00  .]..............
+//             let offset = instance.readPointer();
+//             let headers = offset.add(0);
+//             let method = offset.add(4).readInt();
+//             let version = offset.add(8);
+//             let uri = offset.add(0x0c);
+//             let is_used = offset.add(0x10).readS8();
+//             // let disposed = offset.add(0x11);
+//             let content = offset.add(0x14);
+//
+//             Logger.INFO(func_name, 'System_Net_Http_HttpRequestMessage_Fields', {
+//                 headers:headers,
+//                 method:method,
+//                 version:version,
+//                 uri:uri,
+//                 is_used:is_used,
+//                 content:content,
+//             });
+//             Logger.DUMP(func_name, 'headers', hexdump(headers, {offset:0, length:dump_size, header:true, ansi:false}));
+//             Logger.DUMP(func_name, 'version', hexdump(version, {offset:0, length:dump_size, header:true, ansi:false}));
+//             Logger.DUMP(func_name, 'uri', hexdump(uri, {offset:0, length:dump_size, header:true, ansi:false}));
+//             Logger.DUMP(func_name, 'content', hexdump(content, {offset:0, length:dump_size, header:true, ansi:false}));
+//         },
+//         onLeave: function(retval) {
+//         }
+//     })
+// }
 
 function hook_web_request_stream(base_addr: NativePointer) {
-    // System_Net_WebRequestStream$$ProcessWrite	il2cpp	033106ED	00000103	00000070	00000018	R	.	.	.	.	B	T	.
-    //
-    //
-    // System_Threading_Tasks_Task_o *__cdecl System_Net_WebRequestStream__ProcessWrite(
-    //         System_Net_WebRequestStream_o *this,
-    //         System_Byte_array *buffer,
-    //         int32_t offset,
-    //         int32_t size,
-    //         System_Threading_CancellationToken_o cancellationToken,
-    //         const MethodInfo *method)
+    /**
+     *     {
+     *       "Address": 54659481,
+     *       "Name": "System.Net.WebRequestStream$$ProcessWrite",
+     *       "Signature": "System_Threading_Tasks_Task_o* System_Net_WebRequestStream__ProcessWrite (System_Net_WebRequestStream_o* __this, System_Byte_array* buffer, int32_t offset, int32_t size, System_Threading_CancellationToken_o cancellationToken, const MethodInfo* method);",
+     *       "TypeSignature": "iiiiiii"
+     *     },
+     */
 
 
     let func_name = 'WebReqStream';
-    let offset = 0x033106ED;
+    let offset = 0x3420999;
     let dump_size = 0x40;
 
     Logger.INFO(func_name, 'start to hook', {base_addr:base_addr, offset:offset});
@@ -696,7 +726,9 @@ function hook_web_request_stream(base_addr: NativePointer) {
                 cancel:cancel,
                 method:method,
             });
-            Logger.DUMP(func_name, 'buffer', hexdump(buffer, {offset:0, length:size, header:true, ansi:false}));
+            // Logger.DUMP(func_name, 'buffer', hexdump(buffer, {offset:0, length:size, header:true, ansi:false}));
+            // let str = il2cpp_buffer(this.buffer)
+            Logger.INFO(func_name, 'buffer : ', {buffer: buffer.add(0x10).readCString(size)})
         },
         onLeave: function(retval) {
         }
@@ -704,17 +736,17 @@ function hook_web_request_stream(base_addr: NativePointer) {
 }
 
 function hook_ssl_stream_read(base_addr: NativePointer) {
-    // int32_t __cdecl System_Net_Security_SslStream__Read(
-    //         System_Net_Security_SslStream_o *this,
-    //         System_Byte_array *buffer,
-    //         int32_t offset,
-    //         int32_t count,
-    //         const MethodInfo *method)
-
-    //     System.Int32 Read(System.Byte[] buffer, System.Int32 offset, System.Int32 count); // 0x0325c024
+    /**
+     *     {
+     *       "Address": 53920464,
+     *       "Name": "System.Net.Security.SslStream$$Read",
+     *       "Signature": "int32_t System_Net_Security_SslStream__Read (System_Net_Security_SslStream_o* __this, System_Byte_array* buffer, int32_t offset, int32_t count, const MethodInfo* method);",
+     *       "TypeSignature": "iiiiii"
+     *     },
+     */
 
     let func_name = 'SSL_Read';
-    let offset = 0x0325c024;
+    let offset = 0x336c2d0;
     let dump_size = 0x40;
 
     Logger.INFO(func_name, 'start to hook', {base_addr:base_addr, offset:offset});
@@ -752,16 +784,17 @@ function hook_ssl_stream_read(base_addr: NativePointer) {
 }
 
 function hook_ssl_stream_write(base_addr: NativePointer) {
-// void __cdecl System_Net_Security_SslStream__Write(
-//         System_Net_Security_SslStream_o *this,
-//         System_Byte_array *buffer,
-//         int32_t offset,
-//         int32_t count,
-//         const MethodInfo *method)
-// System.Void Write(System.Byte[] buffer, System.Int32 offset, System.Int32 count); // 0x0325c078
+    /**
+     *     {
+     *       "Address": 53920548,
+     *       "Name": "System.Net.Security.SslStream$$Write",
+     *       "Signature": "void System_Net_Security_SslStream__Write (System_Net_Security_SslStream_o* __this, System_Byte_array* buffer, int32_t offset, int32_t count, const MethodInfo* method);",
+     *       "TypeSignature": "viiiii"
+     *     },
+     */
 
     let func_name = 'SSL_Write';
-    let offset = 0x0325c078;
+    let offset = 54023821;
     let dump_size = 0x40;
 
     Logger.INFO(func_name, 'start to hook', {base_addr:base_addr, offset:offset});
@@ -799,17 +832,16 @@ function hook_ssl_stream_write(base_addr: NativePointer) {
 }
 
 function hook_ssl_stream_async_read(base_addr: NativePointer) {
-// System_Threading_Tasks_Task_int__o *__cdecl System_Net_Security_SslStream__ReadAsync(
-//         System_Net_Security_SslStream_o *this,
-//         System_Byte_array *buffer,
-//         int32_t offset,
-//         int32_t count,
-//         System_Threading_CancellationToken_o cancellationToken,
-//         const MethodInfo *method)
-//     System.Threading.Tasks.Task<System.Int32> ReadAsync(System.Byte[] buffer, System.Int32 offset, System.Int32 count, System.Threading.CancellationToken cancellationToken); // 0x0325c0cc
-
+    /**
+     *     {
+     *       "Address": 53920632,
+     *       "Name": "System.Net.Security.SslStream$$ReadAsync",
+     *       "Signature": "System_Threading_Tasks_Task_int__o* System_Net_Security_SslStream__ReadAsync (System_Net_Security_SslStream_o* __this, System_Byte_array* buffer, int32_t offset, int32_t count, System_Threading_CancellationToken_o cancellationToken, const MethodInfo* method);",
+     *       "TypeSignature": "iiiiiii"
+     *     },
+     */
     let func_name = 'SSL_AsyncRead';
-    let offset = 0x0325c0cc;
+    let offset = 0x336c378;
     let dump_size = 0x40;
 
     Logger.INFO(func_name, 'start to hook', {base_addr:base_addr, offset:offset});
@@ -850,17 +882,16 @@ function hook_ssl_stream_async_read(base_addr: NativePointer) {
 }
 
 function hook_ssl_stream_async_write(base_addr: NativePointer) {
-// System_Threading_Tasks_Task_o *__cdecl System_Net_Security_SslStream__WriteAsync(
-//         System_Net_Security_SslStream_o *this,
-//         System_Byte_array *buffer,
-//         int32_t offset,
-//         int32_t count,
-//         System_Threading_CancellationToken_o cancellationToken,
-//         const MethodInfo *method)
-//     System.Threading.Tasks.Task WriteAsync(System.Byte[] buffer, System.Int32 offset, System.Int32 count, System.Threading.CancellationToken cancellationToken); // 0x0325c123
-
+    /**
+     *     {
+     *       "Address": 53920719,
+     *       "Name": "System.Net.Security.SslStream$$WriteAsync",
+     *       "Signature": "System_Threading_Tasks_Task_o* System_Net_Security_SslStream__WriteAsync (System_Net_Security_SslStream_o* __this, System_Byte_array* buffer, int32_t offset, int32_t count, System_Threading_CancellationToken_o cancellationToken, const MethodInfo* method);",
+     *       "TypeSignature": "iiiiiii"
+     *     },
+     */
     let func_name = 'SSL_AsyncWrite';
-    let offset = 0x0325c123;
+    let offset = 54023992;
     let dump_size = 0x40;
 
     Logger.INFO(func_name, 'start to hook', {base_addr:base_addr, offset:offset});
@@ -873,15 +904,21 @@ function hook_ssl_stream_async_write(base_addr: NativePointer) {
             this.cancel = args[4];
             this.method = args[5];
 
-            Logger.INFO(func_name, 'onEnter - params : ', {
-                instance:this.instance,
-                buffer:this.buffer,
-                offset:this.offset,
-                count:this.count,
-                cancel:this.cancel,
-                method:this.method,
-            });
-            Logger.DUMP(func_name, 'buffer', hexdump(this.buffer, {offset:0, length:this.count + 0x10, header:true, ansi:false}));
+            // Logger.INFO(func_name, 'onEnter - params : ', {
+            //     instance:this.instance,
+            //     buffer:this.buffer,
+            //     offset:this.offset,
+            //     count:this.count,
+            //     cancel:this.cancel,
+            //     method:this.method,
+            // });
+            // let str = il2cpp_buffer(this.buffer);
+            // Logger.INFO(func_name, 'buffer : ', {
+            //     buffer:str
+            // })
+            Logger.INFO(func_name, this.buffer.add(0x10).readCString(this.count), {})
+
+            // Logger.DUMP(func_name, 'buffer', hexdump(this.buffer, {offset:0, length:this.count + 0x10, header:true, ansi:false}));
         },
         onLeave: function(retval) {
 
@@ -915,21 +952,21 @@ export function hook_libil2cpp(): void {
         hook_log_debug_int(base_addr);
         hook_log_debug_object(base_addr);
         hook_log_debug_object_object(base_addr);
-        hook_request_sender(base_addr);
-        hook_add_http_header(base_addr);
-        hook_send_request(base_addr);
+        // hook_request_sender(base_addr);
+        // hook_add_http_header(base_addr);
+        // hook_send_request(base_addr);
         hook_system_io_write(base_addr);
-        hook_system_content_serialize(base_addr);
+        // hook_system_content_serialize(base_addr);
         // hook_mono(base_addr);
-        hook_send(base_addr);
-        hook_http_request_message_dispose(base_addr);
-        hook_web_request_stream(base_addr);
-        hook_ssl_stream_read(base_addr);
+        // hook_send(base_addr);
+        // hook_http_request_message_dispose(base_addr);
+        // hook_web_request_stream(base_addr);
+        // hook_ssl_stream_read(base_addr);
         hook_ssl_stream_write(base_addr);
-        hook_ssl_stream_async_read(base_addr);
+        // hook_ssl_stream_async_read(base_addr);
         hook_ssl_stream_async_write(base_addr);
-        hook_deserialize(base_addr);
-        hook_serialize(base_addr);
+        // hook_deserialize(base_addr);
+        // hook_serialize(base_addr);
 
         // trace - debug
         // hook_all_encrypt(base_addr);
