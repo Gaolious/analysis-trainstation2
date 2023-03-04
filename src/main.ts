@@ -19,44 +19,30 @@ function trace() {
         .trace().domain()
         .filterClasses(
         (x) => {
-            return x.name.toLowerCase().indexOf('maincontext') >= 0;
-        })
-        .filterMethods(
-            (x) => {
-                return x.name.toLowerCase().indexOf('servertime') < 0
-                        && x.name.toLowerCase().indexOf('tickupdate') < 0;
-            }
-        )
-        .and().attach('detailed')
-    Il2Cpp
-        .trace().domain()
-        .filterClasses(
-        (x) => {
-            return x.name.toLowerCase().indexOf('backend') >= 0 && x.name.toLowerCase().indexOf('loginresponse') >= 0;
+            return x.name.toLowerCase().indexOf('firebase') >= 0 && x.name.toLowerCase().indexOf('guild') >= 0;
         })
         .and().attach('detailed')
-    Il2Cpp
-        .trace().domain()
-        .filterClasses(
-        (x) => {
-            return x.name.toLowerCase().indexOf('backend') >= 0 && x.name.toLowerCase().indexOf('initialdata') >= 0;
-        })
-        .and().attach('detailed')
-
-
-    // const cls = Il2Cpp.Domain.assembly('PixelFederation.Common.Backend').image;
     // Il2Cpp
     //     .trace().domain()
     //     .filterClasses(
     //     (x) => {
-    //         return x.name.toLowerCase().indexOf('backend') >= 0;
+    //         return x.name.toLowerCase().indexOf('backend') >= 0 && x.name.toLowerCase().indexOf('loginresponse') >= 0;
     //     })
-    //     .filterMethods(
-    //         (x) => {
-    //             return x.name.toLowerCase().indexOf('gettime') < 0
-    //                 && x.name.toLowerCase().indexOf('update') < 0 ;
-    //         }
-    //     ).and().attach('detailed')
+    //     .and().attach('detailed')
+    // Il2Cpp
+    //     .trace().domain()
+    //     .filterClasses(
+    //     (x) => {
+    //         return x.name.toLowerCase().indexOf('backend') >= 0 && x.name.toLowerCase().indexOf('initialdata') >= 0;
+    //     })
+    //     .and().attach('detailed')
+
+
+    // Il2Cpp
+    //     .trace().domain().and().attach('detailed')
+    // Il2Cpp.trace().classes(
+    //     Il2Cpp.Domain.assembly('Game').image.assembly.classes('Game.Firebase.Guild.Commands')
+    // ).and().attach('detailed')
 
     // Il2Cpp.trace().domain(
     // ).filterClasses(

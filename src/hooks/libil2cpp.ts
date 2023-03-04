@@ -11,13 +11,19 @@ import {
 
 
 function hook_log_debug_int(base_addr: NativePointer) {
-    // ; void __cdecl Log__Debug_object_(Il2CppObject *message, const MethodInfo_2D4927D *method)
-    // Log$$Debug_object_ proc near
+    /*
+        {
+      "Address": 51792791,
+      "Name": "Log$$Debug<int>",
+      "Signature": "void Log__Debug_int_ (int32_t message, const MethodInfo_3164B97* method);",
+      "TypeSignature": "vii"
+    },
+     */
     
     // message= dword ptr  8
     // method= dword ptr  0Ch
     let func_name = 'log_dbg_int';
-    let offset = 51137330; // 0x30b10e7;
+    let offset = 51792791; // 0x30b10e7;
     
     Logger.INFO(func_name, 'start to hook', {base_addr:base_addr, offset:offset});
     Interceptor.attach( base_addr.add(offset), {
@@ -41,13 +47,19 @@ function hook_log_debug_int(base_addr: NativePointer) {
 }
 
 function hook_log_debug_object(base_addr: NativePointer) {
-    // ; void __cdecl Log__Debug_object_(Il2CppObject *message, const MethodInfo_2D4927D *method)
-    // Log$$Debug_object_ proc near
+    /*
+    {
+      "Address": 51793017,
+      "Name": "Log$$Debug<object>",
+      "Signature": "void Log__Debug_object_ (Il2CppObject* message, const MethodInfo_3164C79* method);",
+      "TypeSignature": "vii"
+    },
+     */
     
     // message= dword ptr  8
     // method= dword ptr  0Ch
     let func_name = 'log_dbg_obj';
-    let offset = 51137556; // 0x30b11c9;
+    let offset = 51793017; // 0x30b11c9;
     
     Logger.INFO(func_name, 'start to hook', {base_addr:base_addr, offset:offset});
     Interceptor.attach( base_addr.add(offset), {
@@ -82,14 +94,17 @@ function il2cpp_buffer(base_addr: NativePointer) {
     return str_msg
 }
 function hook_log_debug_object_object(base_addr: NativePointer) {
-    // void __cdecl Log__Debug_object__object_(Il2CppObject *message, Il2CppObject *tag, const MethodInfo_2D49326 *method)
-    // Log$$Debug_object__object_ proc near
-    // message= dword ptr  8
-    // tag= dword ptr  0Ch
-    // method= dword ptr  10h
+    /*
+    {
+      "Address": 51793186,
+      "Name": "Log$$Debug<object, object>",
+      "Signature": "void Log__Debug_object__object_ (Il2CppObject* message, Il2CppObject* tag, const MethodInfo_3164D22* method);",
+      "TypeSignature": "viii"
+    },
+     */
 
     let func_name = 'log_dbg_obj2';
-    let offset = 51137725; // 0x30b1272;
+    let offset = 51793186; // 0x30b1272;
     
     Logger.INFO(func_name, 'start to hook', {base_addr:base_addr, offset:offset});
     Interceptor.attach( base_addr.add(offset), {
@@ -384,10 +399,13 @@ function hook_add_http_header(base_addr: NativePointer) {
     })    
 } 
 
+
+
+
 function hook_system_io_write(base_addr: NativePointer) {
     /*
-        {
-      "Address": 42778738,
+    {
+      "Address": 43326505,
       "Name": "System.IO.MemoryStream$$Write",
       "Signature": "void System_IO_MemoryStream__Write (System_IO_MemoryStream_o* __this, System_Byte_array* buffer, int32_t offset, int32_t count, const MethodInfo* method);",
       "TypeSignature": "viiiii"
@@ -395,7 +413,7 @@ function hook_system_io_write(base_addr: NativePointer) {
     * */
 
         let func_name = 'IO.Mem.Write';
-        let offset = 42824675; // 0x28cc072;
+        let offset = 43326505;
         let dump_size = 0x40;
         
         Logger.INFO(func_name, 'start to hook', {base_addr:base_addr, offset:offset});
@@ -785,8 +803,8 @@ function hook_ssl_stream_read(base_addr: NativePointer) {
 
 function hook_ssl_stream_write(base_addr: NativePointer) {
     /**
-     *     {
-     *       "Address": 53920548,
+     *    {
+     *       "Address": 54643625,
      *       "Name": "System.Net.Security.SslStream$$Write",
      *       "Signature": "void System_Net_Security_SslStream__Write (System_Net_Security_SslStream_o* __this, System_Byte_array* buffer, int32_t offset, int32_t count, const MethodInfo* method);",
      *       "TypeSignature": "viiiii"
@@ -794,7 +812,7 @@ function hook_ssl_stream_write(base_addr: NativePointer) {
      */
 
     let func_name = 'SSL_Write';
-    let offset = 54023821;
+    let offset = 54643625;
     let dump_size = 0x40;
 
     Logger.INFO(func_name, 'start to hook', {base_addr:base_addr, offset:offset});
@@ -883,15 +901,15 @@ function hook_ssl_stream_async_read(base_addr: NativePointer) {
 
 function hook_ssl_stream_async_write(base_addr: NativePointer) {
     /**
-     *     {
-     *       "Address": 53920719,
+     *    {
+     *       "Address": 54643796,
      *       "Name": "System.Net.Security.SslStream$$WriteAsync",
      *       "Signature": "System_Threading_Tasks_Task_o* System_Net_Security_SslStream__WriteAsync (System_Net_Security_SslStream_o* __this, System_Byte_array* buffer, int32_t offset, int32_t count, System_Threading_CancellationToken_o cancellationToken, const MethodInfo* method);",
      *       "TypeSignature": "iiiiiii"
      *     },
      */
     let func_name = 'SSL_AsyncWrite';
-    let offset = 54023992;
+    let offset = 54643796;
     let dump_size = 0x40;
 
     Logger.INFO(func_name, 'start to hook', {base_addr:base_addr, offset:offset});
