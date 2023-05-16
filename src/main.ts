@@ -15,28 +15,39 @@ function onLoadedEmpty(obj:InvocationContext, args:InvocationReturnValue){}
 function trace() {
     Logger.INFO('UNITY VERSION', ' : ' + Il2Cpp.unityVersion);
 
-    Il2Cpp
-        .trace().domain()
-        .filterClasses(
-        (x) => {
-            return x.name.toLowerCase().indexOf('firebase') >= 0 && x.name.toLowerCase().indexOf('guild') >= 0;
-        })
-        .and().attach('detailed')
     // Il2Cpp
-    //     .trace().domain()
-    //     .filterClasses(
-    //     (x) => {
-    //         return x.name.toLowerCase().indexOf('backend') >= 0 && x.name.toLowerCase().indexOf('loginresponse') >= 0;
-    //     })
+    //     .trace()
+    //     .classes(
+    //         Il2Cpp.Domain.assembly('Firebase').image.class('Firebase.Firestore')
+    //     )
     //     .and().attach('detailed')
+    //
     // Il2Cpp
-    //     .trace().domain()
-    //     .filterClasses(
-    //     (x) => {
-    //         return x.name.toLowerCase().indexOf('backend') >= 0 && x.name.toLowerCase().indexOf('initialdata') >= 0;
-    //     })
+    //     .trace()
+    //     .domain()
+    //     .filterMethods(
+    //         (x) => {
+    //             return x.name.toLowerCase().indexOf('document') >= 0 ;
+    //         }
+    //     )
     //     .and().attach('detailed')
 
+    Il2Cpp.trace().domain(
+    ).filterClasses(
+        (x) => {
+            if (x.name.toLowerCase().indexOf('firebaseauth') >= 0) return true;
+            if (x.name.toLowerCase().indexOf('database') >= 0) return true;
+            // if (x.name.toLowerCase().indexOf('database') >= 0) return true;
+            // if (x.name.toLowerCase().indexOf('authenticate') >= 0) return true;
+            if (x.name.toLowerCase().indexOf('signin') >= 0) return true;
+            if (x.name.toLowerCase().indexOf('firebaseuser') >= 0) return true;
+            if (x.name.toLowerCase().indexOf('pixelfirebase') >= 0) return true;
+            // if (x.name.toLowerCase().indexOf('firestore') >= 0) return true;
+            if (x.name.toLowerCase().indexOf('authprovider') >= 0) return true;
+            if (x.name.toLowerCase().indexOf('oauth') >= 0) return true;
+            return false;
+        }
+    ).and().attach('detailed')
 
     // Il2Cpp
     //     .trace().domain().and().attach('detailed')
@@ -94,9 +105,8 @@ function onLoadedLibgame(obj:InvocationContext, ret:InvocationReturnValue)
         Thread.sleep(1)
     }
     // trace()
-    // logAndroidId();
-    hook_libil2cpp();
     logAndroidId();
+    hook_libil2cpp();
     // Il2Cpp.dump()
 }
 

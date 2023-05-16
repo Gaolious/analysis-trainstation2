@@ -12,18 +12,16 @@ import {
 
 function hook_log_debug_int(base_addr: NativePointer) {
     /*
-        {
-      "Address": 51792791,
+      "Address": 51798001,
       "Name": "Log$$Debug<int>",
-      "Signature": "void Log__Debug_int_ (int32_t message, const MethodInfo_3164B97* method);",
+      "Signature": "void Log__Debug_int_ (int32_t message, const MethodInfo_3165FF1* method);",
       "TypeSignature": "vii"
-    },
      */
     
     // message= dword ptr  8
     // method= dword ptr  0Ch
     let func_name = 'log_dbg_int';
-    let offset = 51792791; // 0x30b10e7;
+    let offset = 51798001;
     
     Logger.INFO(func_name, 'start to hook', {base_addr:base_addr, offset:offset});
     Interceptor.attach( base_addr.add(offset), {
@@ -49,9 +47,9 @@ function hook_log_debug_int(base_addr: NativePointer) {
 function hook_log_debug_object(base_addr: NativePointer) {
     /*
     {
-      "Address": 51793017,
+      "Address": 51798227,
       "Name": "Log$$Debug<object>",
-      "Signature": "void Log__Debug_object_ (Il2CppObject* message, const MethodInfo_3164C79* method);",
+      "Signature": "void Log__Debug_object_ (Il2CppObject* message, const MethodInfo_31660D3* method);",
       "TypeSignature": "vii"
     },
      */
@@ -59,7 +57,7 @@ function hook_log_debug_object(base_addr: NativePointer) {
     // message= dword ptr  8
     // method= dword ptr  0Ch
     let func_name = 'log_dbg_obj';
-    let offset = 51793017; // 0x30b11c9;
+    let offset = 51798227;
     
     Logger.INFO(func_name, 'start to hook', {base_addr:base_addr, offset:offset});
     Interceptor.attach( base_addr.add(offset), {
@@ -96,15 +94,15 @@ function il2cpp_buffer(base_addr: NativePointer) {
 function hook_log_debug_object_object(base_addr: NativePointer) {
     /*
     {
-      "Address": 51793186,
+      "Address": 51798396,
       "Name": "Log$$Debug<object, object>",
-      "Signature": "void Log__Debug_object__object_ (Il2CppObject* message, Il2CppObject* tag, const MethodInfo_3164D22* method);",
+      "Signature": "void Log__Debug_object__object_ (Il2CppObject* message, Il2CppObject* tag, const MethodInfo_316617C* method);",
       "TypeSignature": "viii"
     },
      */
 
     let func_name = 'log_dbg_obj2';
-    let offset = 51793186; // 0x30b1272;
+    let offset = 51798396;
     
     Logger.INFO(func_name, 'start to hook', {base_addr:base_addr, offset:offset});
     Interceptor.attach( base_addr.add(offset), {
@@ -399,13 +397,10 @@ function hook_add_http_header(base_addr: NativePointer) {
     })    
 } 
 
-
-
-
 function hook_system_io_write(base_addr: NativePointer) {
     /*
     {
-      "Address": 43326505,
+      "Address": 43331641,
       "Name": "System.IO.MemoryStream$$Write",
       "Signature": "void System_IO_MemoryStream__Write (System_IO_MemoryStream_o* __this, System_Byte_array* buffer, int32_t offset, int32_t count, const MethodInfo* method);",
       "TypeSignature": "viiiii"
@@ -413,7 +408,7 @@ function hook_system_io_write(base_addr: NativePointer) {
     * */
 
         let func_name = 'IO.Mem.Write';
-        let offset = 43326505;
+        let offset = 43331641;
         let dump_size = 0x40;
         
         Logger.INFO(func_name, 'start to hook', {base_addr:base_addr, offset:offset});
@@ -804,7 +799,7 @@ function hook_ssl_stream_read(base_addr: NativePointer) {
 function hook_ssl_stream_write(base_addr: NativePointer) {
     /**
      *    {
-     *       "Address": 54643625,
+     *       "Address": 54648358,
      *       "Name": "System.Net.Security.SslStream$$Write",
      *       "Signature": "void System_Net_Security_SslStream__Write (System_Net_Security_SslStream_o* __this, System_Byte_array* buffer, int32_t offset, int32_t count, const MethodInfo* method);",
      *       "TypeSignature": "viiiii"
@@ -812,7 +807,7 @@ function hook_ssl_stream_write(base_addr: NativePointer) {
      */
 
     let func_name = 'SSL_Write';
-    let offset = 54643625;
+    let offset = 54648358;
     let dump_size = 0x40;
 
     Logger.INFO(func_name, 'start to hook', {base_addr:base_addr, offset:offset});
@@ -902,14 +897,14 @@ function hook_ssl_stream_async_read(base_addr: NativePointer) {
 function hook_ssl_stream_async_write(base_addr: NativePointer) {
     /**
      *    {
-     *       "Address": 54643796,
+     *       "Address": 54648529,
      *       "Name": "System.Net.Security.SslStream$$WriteAsync",
      *       "Signature": "System_Threading_Tasks_Task_o* System_Net_Security_SslStream__WriteAsync (System_Net_Security_SslStream_o* __this, System_Byte_array* buffer, int32_t offset, int32_t count, System_Threading_CancellationToken_o cancellationToken, const MethodInfo* method);",
      *       "TypeSignature": "iiiiiii"
      *     },
      */
     let func_name = 'SSL_AsyncWrite';
-    let offset = 54643796;
+    let offset = 54648529;
     let dump_size = 0x40;
 
     Logger.INFO(func_name, 'start to hook', {base_addr:base_addr, offset:offset});
@@ -922,18 +917,6 @@ function hook_ssl_stream_async_write(base_addr: NativePointer) {
             this.cancel = args[4];
             this.method = args[5];
 
-            // Logger.INFO(func_name, 'onEnter - params : ', {
-            //     instance:this.instance,
-            //     buffer:this.buffer,
-            //     offset:this.offset,
-            //     count:this.count,
-            //     cancel:this.cancel,
-            //     method:this.method,
-            // });
-            // let str = il2cpp_buffer(this.buffer);
-            // Logger.INFO(func_name, 'buffer : ', {
-            //     buffer:str
-            // })
             Logger.INFO(func_name, this.buffer.add(0x10).readCString(this.count), {})
 
             // Logger.DUMP(func_name, 'buffer', hexdump(this.buffer, {offset:0, length:this.count + 0x10, header:true, ansi:false}));
@@ -954,6 +937,224 @@ function hook_ssl_stream_async_write(base_addr: NativePointer) {
         }
     })
 }
+// function hook_firebase_collection_reference_collection(base_addr: NativePointer) {
+//     /**
+//      *      "Address": 35793659,
+//      *       "Name": "Firebase.Firestore.FirebaseFirestore$$Collection",
+//      *       "Signature": "Firebase_Firestore_CollectionReference_o* Firebase_Firestore_FirebaseFirestore__Collection (
+//      *       Firebase_Firestore_FirebaseFirestore_o* __this, System_String_o* path, const MethodInfo* method);",
+//      *       "TypeSignature": "iiii"
+//      */
+//     let func_name = 'FB_collection';
+//     let offset = 35793659;
+//
+//     Logger.INFO(func_name, 'start to hook', {base_addr:base_addr, offset:offset});
+//     Interceptor.attach( base_addr.add(offset), {
+//         onEnter: function(args) {
+//             let path = args[1];
+//             Logger.INFO(func_name, 'Collection', {path:il2cpp_string(path)});
+//         },
+//         onLeave: function(retval) {
+//             return retval
+//         }
+//     })
+// }
+//
+// function hook_firebase_collection_reference_collection_group(base_addr: NativePointer) {
+//     /**
+//      *    {
+//      *       "Address": 35794311,
+//      *       "Name": "Firebase.Firestore.FirebaseFirestore$$CollectionGroup",
+//      *       "Signature": "Firebase_Firestore_Query_o* Firebase_Firestore_FirebaseFirestore__CollectionGroup (Firebase_Firestore_FirebaseFirestore_o* __this, System_String_o* collectionId, const MethodInfo* method);",
+//      *       "TypeSignature": "iiii"
+//      *     },
+//      */
+//     let func_name = 'FB_ColGrp';
+//     let offset = 35794311;
+//
+//     Logger.INFO(func_name, 'start to hook', {base_addr:base_addr, offset:offset});
+//     Interceptor.attach( base_addr.add(offset), {
+//         onEnter: function(args) {
+//             this.instance = args[0];
+//             this.buffer = args[1];
+//             let str_msg = il2cpp_string(this.buffer);
+//
+//             Logger.INFO(func_name, 'CollectionGroup', {collectionId:str_msg});
+//             Logger.INFO(func_name, this.buffer.add(0x10).readCString(this.count), {})
+//
+//             // Logger.DUMP(func_name, 'buffer', hexdump(this.buffer, {offset:0, length:this.count + 0x10, header:true, ansi:false}));
+//         },
+//         onLeave: function(retval) {
+//             return retval
+//         }
+//     })
+// }
+//
+// function hook_firebase_document_reference_document(base_addr: NativePointer) {
+//     /**
+//      *      "Address": 35793985,
+//      *       "Name": "Firebase.Firestore.FirebaseFirestore$$Document",
+//      *       "Signature": "Firebase_Firestore_DocumentReference_o* Firebase_Firestore_FirebaseFirestore__Document (
+//      *       Firebase_Firestore_FirebaseFirestore_o* __this, System_String_o* path, const MethodInfo* method);",
+//      *       "TypeSignature": "iiii"
+//      */
+//     let func_name = 'FB_doc';
+//     let offset = 35793985;
+//
+//     Logger.INFO(func_name, 'start to hook', {base_addr:base_addr, offset:offset});
+//     Interceptor.attach( base_addr.add(offset), {
+//         onEnter: function(args) {
+//             let path = args[1];
+//             Logger.INFO(func_name, '$Document', {path:il2cpp_string(path)});
+//
+//             // Logger.DUMP(func_name, 'buffer', hexdump(this.buffer, {offset:0, length:this.count + 0x10, header:true, ansi:false}));
+//         },
+//         onLeave: function(retval) {
+//             return retval
+//         }
+//     })
+// }
+//
+//
+// function hook_firebase_checknotnull_or_empty(base_addr: NativePointer) {
+//     /**
+//      *    {
+//      *       "Address": 45245289,
+//      *       "Name": "Firebase.Firestore.Internal.Preconditions$$CheckNotNullOrEmpty",
+//      *       "Signature": "System_String_o* Firebase_Firestore_Internal_Preconditions__CheckNotNullOrEmpty (
+//      *          System_String_o* argument, System_String_o* paramName, const MethodInfo* method);",
+//      *       "TypeSignature": "iiii"
+//      *     },
+//      */
+//     let func_name = 'FB_ChkNulEmt';
+//     let offset = 45245289;
+//
+//     Logger.INFO(func_name, 'start to hook', {base_addr:base_addr, offset:offset});
+//     Interceptor.attach( base_addr.add(offset), {
+//         onEnter: function(args) {
+//             let argument = args[0],
+//                 paramName = args[1];
+//
+//             Logger.INFO(func_name, 'CheckNotNullOrEmpty', {
+//                 argument: il2cpp_string(argument),
+//                 paramName: il2cpp_string(paramName),
+//             });
+//         },
+//         onLeave: function(retval) {
+//             return retval
+//         }
+//     })
+// }
+//
+//
+// function hook_firebase_init(base_addr: NativePointer) {
+//     /**
+//      *      "Address": 60272215,
+//      *       "Name": "Game.Firebase.Implementation.FirebaseManager$$Init",
+//      *       "Signature": "System_Threading_Tasks_Task_o* Game_Firebase_Implementation_FirebaseManager__Init (
+//      *          Game_Firebase_Implementation_FirebaseManager_o* __this,
+//      *          System_String_o* playerId, System_String_o* gameAccessToken, const MethodInfo* method);",
+//      *       "TypeSignature": "iiiii"
+//      */
+//     let func_name = 'FB_init';
+//     let offset = 60272215;
+//
+//     Logger.INFO(func_name, 'start to hook', {base_addr:base_addr, offset:offset});
+//     Interceptor.attach( base_addr.add(offset), {
+//         onEnter: function(args) {
+//             let playerId = args[1],
+//                 accent_token = args[2];
+//
+//             Logger.INFO(func_name, 'FirebaseManager$$Init', {
+//                 playerId: il2cpp_string(playerId),
+//                 accent_token: il2cpp_string(accent_token),
+//             });
+//         },
+//         onLeave: function(retval) {
+//             return retval
+//         }
+//     })
+// }
+//
+//
+// function hook_firebase_get_player(base_addr: NativePointer) {
+//     /**
+//      *      "Address": 60265473,
+//      *       "Name": "Game.Firebase.Implementation.FirebaseManager$$GetPlayer",
+//      *       "Signature": "Firebase_Firestore_DocumentReference_o* Game_Firebase_Implementation_FirebaseManager__GetPlayer (
+//      *       Game_Firebase_Implementation_FirebaseManager_o* __this, System_String_o* storageId, const MethodInfo* method);",
+//      *       "TypeSignature": "iiii"
+//      */
+//     let func_name = 'FB_GetPlyr';
+//     let offset = 60265473;
+//
+//     Logger.INFO(func_name, 'start to hook', {base_addr:base_addr, offset:offset});
+//     Interceptor.attach( base_addr.add(offset), {
+//         onEnter: function(args) {
+//             let storageId = args[1]
+//
+//             Logger.INFO(func_name, 'FirebaseManager$$GetPlayer', {
+//                 storageId: il2cpp_string(storageId),
+//             });
+//         },
+//         onLeave: function(retval) {
+//             return retval
+//         }
+//     })
+// }
+//
+// function hook_firebase_get_guild(base_addr: NativePointer) {
+//     /**
+//      *      "Address": 60274859,
+//      *       "Name": "Game.Firebase.Implementation.FirebaseManager$$GetGuild",
+//      *       "Signature": "Firebase_Firestore_DocumentReference_o* Game_Firebase_Implementation_FirebaseManager__GetGuild
+//      *       Game_Firebase_Implementation_FirebaseManager_o* __this, System_String_o* firebaseUid, const MethodInfo* method);",
+//      *       "TypeSignature": "iiii"
+//      */
+//     let func_name = 'FB_GetGld';
+//     let offset = 60274859;
+//
+//     Logger.INFO(func_name, 'start to hook', {base_addr:base_addr, offset:offset});
+//     Interceptor.attach( base_addr.add(offset), {
+//         onEnter: function(args) {
+//             let firebaseUid = args[1]
+//
+//             Logger.INFO(func_name, 'FirebaseManager$$GetGuild', {
+//                 firebaseUid: il2cpp_string(firebaseUid),
+//             });
+//         },
+//         onLeave: function(retval) {
+//             return retval
+//         }
+//     })
+// }
+//
+// function hook_firebase_log_job(base_addr: NativePointer) {
+//     /**
+//      *      "Address": 60299913,
+//      *       "Name": "Game.Firebase.Guild.Commands.SubscribeToGuild$$LogJob",
+//      *       "Signature": "void Game_Firebase_Guild_Commands_SubscribeToGuild__LogJob (
+//      *       Game_Firebase_Guild_Commands_SubscribeToGuild_o* __this,
+//      *       Game_Model_Job_Data_JobSessionData_o* job, System_String_o* action, const MethodInfo* method);",
+//      *       "TypeSignature": "viiii"
+//      */
+//     let func_name = 'FB_LogJob';
+//     let offset = 60299913;
+//
+//     Logger.INFO(func_name, 'start to hook', {base_addr:base_addr, offset:offset});
+//     Interceptor.attach( base_addr.add(offset), {
+//         onEnter: function(args) {
+//             let action = args[2]
+//
+//             Logger.INFO(func_name, 'SubscribeToGuild$$LogJob', {
+//                 action: il2cpp_string(action),
+//             });
+//         },
+//         onLeave: function(retval) {
+//             return retval
+//         }
+//     })
+// }
 
 export function hook_libil2cpp(): void {
     let func_name = 'hook_libil2cpp';
@@ -996,5 +1197,13 @@ export function hook_libil2cpp(): void {
         // hook_all_deserialize(base_addr);
         // hook_all_http_request(base_addr);
         // hook_all_http_request_message(base_addr);
+        // hook_firebase_collection_reference_collection(base_addr);
+        // hook_firebase_collection_reference_collection_group(base_addr);
+        // hook_firebase_document_reference_document(base_addr);
+        // hook_firebase_checknotnull_or_empty(base_addr);
+        // hook_firebase_init(base_addr);
+        // hook_firebase_get_player(base_addr);
+        // hook_firebase_get_guild(base_addr);
+        // hook_firebase_log_job(base_addr);
     }
 }
