@@ -1,0 +1,21 @@
+{
+  "name": "frida-agent-for-train-station2",
+  "version": "1.0.0",
+  "description": "train-station2 Frida agent",
+  "private": true,
+  "main": "src/main.ts",
+  "scripts": {
+    "prepare": "npm run build",
+    "build": "frida-compile src/main.ts -o js/ts2.js -c",
+    "watch": "frida-compile src/main.ts -o js/ts2.js -w",
+    "attach": "frida -U -l js/ts2.js",
+    "spawn": "frida -U -l js/ts2.js -f"
+  },
+  "devDependencies": {
+    "@types/frida-gum": "^17.1.0",
+    "frida-compile": "^10.2.4",
+    "frida-il2cpp-bridge": "*"
+  },
+  "author": "",
+  "license": "ISC"
+}
